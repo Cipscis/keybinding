@@ -15,6 +15,19 @@ const keys = (function () {
 	}
 	*/
 
+	const defaults = Object.freeze({
+		allowInInput: false,
+		requireCtrl: false,
+	});
+
+	const aliases = Object.freeze({
+		'spacebar': ' ',
+		 'up': 'arrowup',
+		 'right': 'arrowright',
+		 'down': 'arrowdown',
+		 'left': 'arrowleft',
+	});
+
 	const module = {
 		_isFocusOnInput: function () {
 			// Check if the current active element is an input that accepts keypresses
@@ -37,6 +50,22 @@ const keys = (function () {
 			return isInput;
 		},
 
+		_matchKey: function (key, keyToMatch) {
+			key = key.toLowerCase();
+			keyToMatch = keyToMatch.toLowerCase();
+
+			if (key === keyToMatch) {
+				return true;
+			}
+
+			const alias = aliases[key];
+			if (alias === keyToMatch) {
+				return true;
+			}
+
+			return false;
+		},
+
 		_bindFn: function (key, fn, fnWrapper) {
 			document.addEventListener('keydown', fnWrapper);
 			if (!bindings[key]) {
@@ -49,38 +78,77 @@ const keys = (function () {
 			});
 		},
 
-		bind: function (key, fn, allowInInput, requireCtrl) {
-			if (typeof key !== 'string') {
-				throw new TypeError('The key parameter to bind must be a string.');
-			} else {
-				key = key.toLowerCase();
-			}
-
-			let fnWrapper = function (event) {
-				// Don't check key if focus is on an input element,
-				// unless it is allowed or requires Ctrl
-				if (!allowInInput && module._isFocusOnInput() && !requireCtrl) {
-					return;
-				}
-
-				// Some behaviour, like selecting an autocomplete result, can
-				// fire a keydown event with no key
-				if (event.key && event.key.toLowerCase() === key) {
-					if (!requireCtrl || event.ctrlKey) {
-						if (fn.apply(this, arguments) === false) {
-							// Implement jQuery-like shorthand of return false;
-							event.preventDefault();
-							event.stopPropagation();
-						}
-					}
-				}
-			};
-
-			module._bindFn(key, fn, fnWrapper);
+		unbind: function (key, fn) {
 		},
 
-		unbind: function (key, fn) {
-			let binding = bindings[key];
+		bind: function (keyString, fn, opts) {
+			if (typeof keyString !== 'string') {
+				throw new TypeError('The key parameter to bind must be a string.');
+			} else {
+				keyString = keyString.toLowerCase();
+			}
+
+			const options = Object.assign({}, defaults, opts);
+
+			const keys = keyString.trim().split(/\s+/);
+
+			const keysPressed = [];
+
+			if (keys.length > 0) {
+				// Record as many of the past keys pressed as required for the sequence
+
+				const fnWrapper = function (event) {
+					// Don't check key if focus is on an input element,
+					// unless it is allowed or requires Ctrl
+					if (!options.allowInInput && module._isFocusOnInput() && !options.requireCtrl) {
+						return;
+					}
+
+					// Some behaviour, like selecting an autocomplete result, can
+					// fire a keydown event with no key
+					const key = event.key?.toLowerCase();
+
+					// Don't check key presses if focus is on an input element
+					if (module._isFocusOnInput()) {
+						return;
+					}
+
+					if (!module._matchKey(key, 'shift')) {
+						// Ignore shift, as it's used as a modifier
+						keysPressed.push(key);
+					}
+					if (keysPressed.length > keys.length) {
+						keysPressed.shift();
+					}
+
+					if (key && module._matchKey(key, keys[keys.length-1])) {
+						if (!options.requireCtrl || event.ctrlKey) {
+							// When the final key is pressed, check if the whole sequence matches
+							let i;
+							for (i = 0; i < keys.length; i++) {
+								if (!module._matchKey(keys[i], keysPressed[i])) {
+									break;
+								}
+							}
+
+							// i only reaches keys.length if the break; line was never executed
+							if (i === keys.length) {
+								if (fn.apply(this, arguments) === false) {
+									// Implement jQuery-like shorthand of return false;
+									event.preventDefault();
+									event.stopPropagation();
+								}
+							}
+						}
+					}
+				};
+
+				module._bindFn(keyString, fn, fnWrapper);
+			}
+		},
+
+		unbind: function (keyString, fn) {
+			const binding = bindings[key];
 			if (binding) {
 				// Find index
 				let index;
@@ -95,82 +163,6 @@ const keys = (function () {
 					binding.splice(index, 1);
 				}
 			}
-		},
-
-		_getSequenceArgs: function (keyA, keyB, keyC, fn) {
-			let args = Array.prototype.splice.call(arguments, 0);
-			let keys = args[0];
-			fn = args[args.length-1]; // The function should be the last event
-
-			if (!Array.isArray(keys)) {
-				keys = args.splice(0, args.length-1);
-			}
-
-			return {
-				keys,
-				fn
-			};
-		},
-
-		bindSequence: function (keyA, keyB, keyC, fn) {
-			let args = module._getSequenceArgs.apply(this, arguments);
-			let keys = args.keys;
-
-			let keysPressed = [];
-
-			fn = args.fn;
-
-			if (keys.length > 1) {
-				// Record as many of the past keys pressed as required for the sequence
-
-				let fnWrapper = function (event) {
-					let key = event.key.toLowerCase();
-
-					// Don't check key presses if focus is on an input element
-					if (module._isFocusOnInput()) {
-						return;
-					}
-
-					if (key !== 'shift') {
-						// Ignore shift, as it's used as a modifier
-						keysPressed.push(key);
-					}
-					if (keysPressed.length > keys.length) {
-						keysPressed.shift();
-					}
-
-					if (key === keys[keys.length-1]) {
-						// When the final key is pressed, check if the whole sequence matches
-						let i;
-						for (i = 0; i < keys.length; i++) {
-							if (keys[i] !== keysPressed[i]) {
-								break;
-							}
-						}
-
-						// i only reaches keys.length if the break; line was never executed
-						if (i === keys.length) {
-							if (fn.apply(this, arguments) === false) {
-								// Implement jQuery-like shorthand of return false;
-								event.preventDefault();
-								event.stopPropagation();
-							}
-						}
-					}
-				};
-
-				let keyString = keys.join(',');
-				module._bindFn(keyString, fn, fnWrapper);
-			}
-		},
-
-		unbindSequence: function (keyA, keyB, keyC, fn) {
-			let args = module._getSequenceArgs.apply(this, arguments);
-			let keyString = args.keys.join(',');
-
-			fn = args.fn;
-
-			module.unbind(keyString, fn);
 		},
 	};
 

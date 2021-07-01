@@ -15,13 +15,13 @@ const setMessage = (message) => {
 	};
 };
 
-const konamiCode = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a' ,'enter'];
+const konamiCode = 'up up down down left right left right b a enter';
 const cheat = setMessage('Hey, stop cheating!');
 
 bind('a', setMessage('You pressed the \'a\' key'));
-bind('m', setMessage('You pressed Ctrl + \'m\''), true, true);
+bind('m', setMessage('You pressed Ctrl + \'m\''), { allowInInput: true, requireCtrl: true });
 
-bindSequence(konamiCode, cheat);
+bind(konamiCode, cheat);
 
 document.querySelector('.js-unbind-sequence').addEventListener('click', (e) => unbindSequence(konamiCode, cheat));
 
