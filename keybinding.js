@@ -143,11 +143,6 @@ const keys = (function () {
 					// fire a keydown event with no key
 					const key = event.key?.toLowerCase();
 
-					// Don't check key presses if focus is on an input element
-					if (module._isFocusOnInput()) {
-						return;
-					}
-
 					if (!module._matchKey(key, 'shift')) {
 						// Ignore shift, as it's used as a modifier
 						keysPressed.push(key);
