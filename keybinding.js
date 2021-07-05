@@ -32,22 +32,52 @@ const keys = (function () {
 		_isFocusOnInput: function () {
 			// Check if the current active element is an input that accepts keypresses
 
-			let $activeEl = document.activeElement;
-			let nodeName = $activeEl.nodeName.toLowerCase();
+			const $activeEl = document.activeElement;
+			const isFocusOnInput = module._isInput($activeEl);
 
-			let isInput = (['input', 'textarea', 'select'].includes(nodeName));
+			return isFocusOnInput;
+		},
+
+		_isFocusOnProtectedElement: function () {
+			// Check if the current active element is protected, so keypresses shouldn't be recorded
+
+			const $activeEl = document.activeElement;
+			const isFocusOnProtectedElement = module._isProtectedElement($activeEl);
+
+			return isFocusOnProtectedElement;
+		},
+
+		_isInput: function ($element) {
+			const nodeName = $element.nodeName.toLowerCase();
+			const isInput = (['input', 'textarea', 'select'].includes(nodeName));
 
 			if (nodeName === 'input') {
-				let inputType = $activeEl.attributes.type.value.toLowerCase();
+				const inputType = ($element.attributes.type?.value || 'text').toLowerCase();
 
 				if (['color', 'radio', 'checkbox'].includes(inputType)) {
 					isInput = false;
 				}
-			} else if ($activeEl.isContentEditable) {
+			} else if ($element.isContentEditable) {
 				isInput = true;
 			}
 
 			return isInput;
+		},
+
+		_isProtectedElement: function ($element) {
+			const nodeName = $element.nodeName.toLowerCase();
+
+			let isProtectedElement = false;
+
+			if (nodeName === 'input') {
+				const inputType = ($element.attributes.type?.value || 'text').toLowerCase();
+
+				if (inputType === 'password') {
+					isProtectedElement = true;
+				}
+			}
+
+			return isProtectedElement;
 		},
 
 		_matchKey: function (key, keyToMatch) {
@@ -100,7 +130,12 @@ const keys = (function () {
 				const fnWrapper = function (event) {
 					// Don't check key if focus is on an input element,
 					// unless it is allowed or requires Ctrl
-					if (!options.allowInInput && module._isFocusOnInput() && !options.requireCtrl) {
+					if (!(options.allowInInput || options.requireCtrl) && module._isFocusOnInput()) {
+						return;
+					}
+
+					// Never record keypresses while focus is in a protected element
+					if (module._isFocusOnProtectedElement()) {
 						return;
 					}
 

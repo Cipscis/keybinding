@@ -8,8 +8,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 * The options currently only apply to the last item
 * Remove ctrlKey option and add modifiers (with +) to the keyString
-* Require the allowInInput option for recording keypresses
-* Always disallow capturing keypresses while focus is in a password field
 * Allow capturing 'A' vs 'a' etc.?
 
 ### Added
@@ -20,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 * Options passed to `bind` are now expected in an object instead of as separate arguments.
 * Key sequences are now passed as strings instead of arrays.
+* Keypresses are never recorded while the focus is in a password field.
 
 ### Removed
 
