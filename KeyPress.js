@@ -1,9 +1,3 @@
-const DefaultModifiers = Object.freeze({
-	altKey: false,
-	ctrlKey: false,
-	shiftKey: false,
-});
-
 const Patterns = Object.freeze({
 	alt: /\balt\+/g,
 	ctrl: /\b(control|ctrl|command|cmd|meta)\+/g,
@@ -23,20 +17,24 @@ const Aliases = Object.freeze({
 });
 
 class KeyPress {
-	constructor(key, modifiers) {
-		modifiers = Object.assign({}, DefaultModifiers, modifiers);
-
-		this.key = key;
-
+	constructor(options) {
+		if (!('key' in options)) {
+			throw new RangeError(`KeyPress: key is a required option`);
+		}
+		this.key = options.key;
 		this.modifiers = {
-			altKey: modifiers.altKey,
-			ctrlKey: modifiers.ctrlKey || modifiers.metaKey,
-			shiftKey: modifiers.shiftKey,
+			altKey: options.altKey || false,
+			ctrlKey: options.metaKey || options.ctrlKey || false,
+			shiftKey: options.shiftKey || false,
 		};
 	}
 
 	match(keyString) {
-		const requiredModifiers = Object.assign({}, DefaultModifiers);
+		const requiredModifiers = {
+			altKey: false,
+			ctrlKey: false,
+			shiftKey: false,
+		};
 
 		// Gather required modifiers for keyString
 		if (Patterns.alt.test(keyString)) {
@@ -55,7 +53,7 @@ class KeyPress {
 		}
 
 		// Check if all keyString's required modifiers were met
-		for (const modifier of requiredModifiers) {
+		for (const modifier in requiredModifiers) {
 			if (requiredModifiers[modifier] && !this.modifiers[modifier]) {
 				// The modifier was required but not recorded
 				return false;
@@ -63,11 +61,16 @@ class KeyPress {
 		}
 
 		// Check if they keyString's key matches the key pressed
-		if (keyString.toLowerCase() !== this.key.toLowerCase()) {
-			return false;
+		if (keyString.toLowerCase() === this.key.toLowerCase()) {
+			return true;
 		}
 
-		return true;
+		// Check if the keyString is an alias for a matching key
+		if (Aliases[keyString.toLowerCase()] === this.key.toLowerCase()) {
+			return true;
+		}
+
+		return false;
 	}
 }
 

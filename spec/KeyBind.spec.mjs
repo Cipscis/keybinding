@@ -1,4 +1,5 @@
 import { KeyBind } from '../KeyBind.js';
+import { KeyPress } from '../KeyPress.js';
 
 describe('KeyBind', () => {
 	it(`throws an error if a string is not passed to its constructor`, () => {
@@ -33,4 +34,25 @@ describe('KeyBind', () => {
 
 		expect(keySequence + '').toBe('a 3 space');
 	});
+
+	it(`can match against an array of KeyPresses`, () => {
+		let keyBind = new KeyBind('ctrl+shift+a alt+x esc');
+
+		let keyPresses = [
+			new KeyPress({
+				key: 'a',
+				ctrlKey: true,
+				shiftKey: true,
+			}),
+			new KeyPress({
+				key: 'x',
+				altKey: true,
+			}),
+			new KeyPress({
+				key: 'escape',
+			}),
+		];
+
+		expect(keyBind.match(keyPresses)).toBe(true);
+	})
 });

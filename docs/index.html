@@ -21,52 +21,82 @@
 			<div class="content">
 				<h2>bind</h2>
 
-				<code>bind(key, fn, allowInInput, requireCtrl)</code>
+				<code>bind(keyString, fn, options)</code>
 
 				<p>Binds a callback to a specified keypress.</p>
 
 				<h3>Arguments</h3>
 
-				<h4>key</h4>
+				<h4>keyString</h4>
 
-				<p>A string of the name of the key to bind to. For a list, see <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values" target="_blank">Key Values</a> on MDN.</p>
+				<p>A string of the key or key combination or sequence to bind to. For a list of key values, see <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values" target="_blank">Key Values</a> on MDN.</p>
+
+				<p>For each key binding, the user's keypresses will be recorded up to the length of the bound sequence. Once the event is fired, the logged keypresses are deleted.</p>
+
+				<p>Keypresses will never be recorded while keyboard focus is in a password input, and by default they will also not be recorded while keyboard focus is in any element that expects keyboard input.</p>
 
 				<p>Some key names also have aliases:</p>
 
 				<dl>
 					<div>
-						<dt>Space</dt>
-						<dd>'spacebar'</dd>
+						<dt><kbd>Space</kbd></dt>
+						<dd><code>'space'</code> <code>'spacebar'</code></dd>
 					</div>
 					<div>
-						<dt>Up arrow</dt>
-						<dd>'up'</dd>
+						<dt><kbd>Up arrow</kbd></dt>
+						<dd><code>'up'</code></dd>
 					</div>
 					<div>
-						<dt>Right arrow</dt>
-						<dd>'right'</dd>
+						<dt><kbd>Right arrow</kbd></dt>
+						<dd><code>'right'</code></dd>
 					</div>
 					<div>
-						<dt>Down arrow</dt>
-						<dd>'down'</dd>
+						<dt><kbd>Down arrow</kbd></dt>
+						<dd><code>'down'</code></dd>
 					</div>
 					<div>
-						<dt>Left arrow</dt>
-						<dd>'left'</dd>
+						<dt><kbd>Left arrow</kbd></dt>
+						<dd><code>'left'</code></dd>
+					</div>
+					<div>
+						<dt><kbd>Escape</kbd></dt>
+						<dd><code>'esc'</code></dd>
 					</div>
 				</dl>
 
+				<p>Modifier keys cannot be detected directly, but can be combined with other keys using <code>'+'</code>, e.g. <code>'ctrl+m'</code></p>
+
+				<dl>
+					<div>
+						<dt><kbd>Alt</kbd></dt>
+						<dd><code>'alt'</code></dd>
+					</div>
+					<div>
+						<dt><kbd>Control</kbd> or <kbd>Command</kbd></dt>
+						<dd><code>'control'</code> <code>'ctrl'</code> <code>'command'</code> <code>'cmd'</code> <code>'meta'</code></dd>
+					</div>
+					<div>
+						<dt><kbd>Shift</kbd></dt>
+						<dd><code>'shift'</code></dd>
+					</div>
+				</dl>
+
+				<p>Sequences of keys can be bound using keyStrings like <code>'ctrl+k ctrl+b'</code></p>
+
 				<h4>fn</h4>
 
-				<p>The function to bind to the keypress.</p>
+				<p>The function to bind to the keypress, using a keydown event.</p>
 
-				<h4>allowInInput</h4>
+				<h4>options</h4>
 
-				<p>Unless this or `requireCtrl` are set to `true`, the keypress will not be checked if the keyboard focus is currently inside a form element.</p>
+				<p>An options object with any of these properties:</p>
 
-				<h4>requireCtrl</h4>
-
-				<p>If set to `true`, the bound function will only be fired if the <kbd>Ctrl</kbd> key is pressed.</p>
+				<dl>
+					<div>
+						<dt>allowInInput <code>boolean</code> <code>false</code></dt>
+						<dd>If set to true, the keypresses will be checked while the keyboard focus is in an element that accepts keyboard input, such as a text input or a textarea.</dd>
+					</div>
+				</dl>
 			</div>
 		</section>
 
@@ -74,59 +104,19 @@
 			<div class="content">
 				<h2>unbind</h2>
 
-				<code>unbind(key, fn)</code>
+				<code>unbind(keyString, fn)</code>
 
-				<p>Unbinds a function from a specified keypress.</p>
+				<p>Unbinds a function from a specified key or set of keys.</p>
 
 				<h3>Arguments</h3>
 
-				<h4>key</h4>
+				<h4>keyString</h4>
 
-				<p>A string of the name of the key to bind to.</p>
+				<p>A string of the key or keys the event is bound to.</p>
 
 				<h4>fn</h4>
 
 				<p>The function to unbind to the keypress.</p>
-			</div>
-		</section>
-
-		<section id="bindsequence">
-			<div class="content">
-				<h2>bindSequence</h2>
-
-				<code>bindSequence(...keys, fn)</code>
-
-				<p>Binds a function to a sequence of keypresses. They must be pressed in order, with no other keypresses between them, before the function will be called.</p>
-
-				<h3>Arguments</h3>
-
-				<h4>keys</h4>
-
-				<p>The names of the keys, in order, that should be pressed in order to fire the bound function.</p>
-
-				<h4>fn</h4>
-
-				<p>The function to bind to the sequence of keypresses.</p>
-			</div>
-		</section>
-
-		<section id="unbindsequence">
-			<div class="content">
-				<h2>unbindSequence</h2>
-
-				<code>unbindSequence(...keys, fn)</code>
-
-				<p>Unbinds a function from a sequence of keypresses.</p>
-
-				<h3>Arguments</h3>
-
-				<h4>keys</h4>
-
-				<p>The names of the keys, in order, that the function is bound to.</p>
-
-				<h4>argB</h4>
-
-				<p>THe function to unbind from the sequence of keypresses.</p>
 			</div>
 		</section>
 

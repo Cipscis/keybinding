@@ -16,6 +16,22 @@ class KeyBind extends Array {
 	toString() {
 		return this.join(' ');
 	}
+
+	match(keyPresses) {
+		if (keyPresses.length !== this.length) {
+			return false;
+		}
+
+		for (const [i, keyPress] of keyPresses.entries()) {
+			const keyBind = this[i];
+
+			if (!keyPress.match(keyBind)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
 
 export { KeyBind };
