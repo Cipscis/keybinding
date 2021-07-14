@@ -1,14 +1,14 @@
 import { KeyBind } from './KeyBind.js';
 import { KeyPress } from './KeyPress.js';
 
-const bindings = {
-	// [keyString]: [
-	// 	{
-	// 		fn,
-	// 		fnWrapper,
-	// 	},
-	// ]
+const bindings = new Map();
+/**
+<Map>{
+	[keyString]: <Map>{
+		[fn]: fnWrapper,
+	},
 };
+*/
 
 const defaults = Object.freeze({
 	allowInInput: false,
@@ -52,13 +52,13 @@ const createFnWrapper = (keyString, fn, opts) => {
 };
 
 const bind = (keyString, fn, options) => {
-	if (!(keyString in bindings)) {
-		bindings[keyString] = [];
+	if (!bindings.has(keyString)) {
+		bindings.set(keyString, new Map());
 	}
 
-	const keyStringBindings = bindings[keyString];
+	const keyStringBindings = bindings.get(keyString);
 
-	if (keyStringBindings.find((el) => el.fn === fn)) {
+	if (keyStringBindings.has(fn)) {
 		// Do nothing - this binding already exists
 		return;
 	}
@@ -66,24 +66,20 @@ const bind = (keyString, fn, options) => {
 	const fnWrapper = createFnWrapper(keyString, fn, options);
 
 	document.addEventListener('keydown', fnWrapper);
-	keyStringBindings.push({
-		fn,
-		fnWrapper,
-	});
+	keyStringBindings.set(fn, fnWrapper);
 };
 
 const unbind = (keyString, fn) => {
-	const keyStringBindings = bindings[keyString];
+	const keyStringBindings = bindings.get(keyString);
 
 	if (!keyStringBindings) {
 		return;
 	}
 
-	const bindingIndex = keyStringBindings.findIndex((el) => el.fn === fn);
-	const binding = keyStringBindings[bindingIndex];
+	const fnWrapper = keyStringBindings.get(fn);
 
-	document.removeEventListener('keydown', binding.fnWrapper);
-	keyStringBindings.splice(bindingIndex, 1);
+	document.removeEventListener('keydown', fnWrapper);
+	keyStringBindings.delete(fn);
 };
 
 const isInput = function ($element) {

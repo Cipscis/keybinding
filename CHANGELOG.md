@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2021-07-14
+
+### Changed
+
+* Refactored bindings to use `Map`
+
 ## [2.0.0] - 2021/07/05
 
 ### Changed
