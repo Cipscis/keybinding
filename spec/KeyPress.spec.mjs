@@ -1,4 +1,4 @@
-import { KeyPress } from '../KeyPress.js';
+import { KeyPress } from '../dist/KeyPress.js';
 
 describe('KeyPress', () => {
 	it(`remembers the key and modifiers that were pressed`, () => {

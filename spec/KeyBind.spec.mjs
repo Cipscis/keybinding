@@ -1,5 +1,5 @@
-import { KeyBind } from '../KeyBind.js';
-import { KeyPress } from '../KeyPress.js';
+import { KeyBind } from '../dist/KeyBind.js';
+import { KeyPress } from '../dist/KeyPress.js';
 
 describe('KeyBind', () => {
 	it(`throws an error if a string is not passed to its constructor`, () => {
