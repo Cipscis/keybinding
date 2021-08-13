@@ -1,5 +1,5 @@
-import { KeyBind } from './KeyBind.js';
-import { KeyPress } from './KeyPress.js';
+import { KeyBind } from 'KeyBind';
+import { KeyPress } from 'KeyPress';
 
 type KeybindingFn = (e: KeyboardEvent, ...otherArgs: unknown[]) => any;
 type KeybindingFnWrapper = (this: any, e: KeyboardEvent, ...otherArgs: unknown[]) => void;
