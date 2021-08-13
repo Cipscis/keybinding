@@ -34,7 +34,20 @@ class KeyPress {
 	key: string;
 	modifiers: KeyPressModifiers;
 
-	constructor(options: KeyPressOptions) {
+	/**
+	 * Creates a recording of a key press, including any modifier keys that were
+	 *   pressed at the time.
+	 *
+	 * @constructor
+	 *
+	 * @param {Object} options - Can accept a KeyboardEvent.
+	 * @param {string} options.key - The key that was pressed.
+	 * @param {boolean?} altKey - Whether or not the Alt key was pressed.
+	 * @param {boolean?} metaKey - Whether or not the Meta key was pressed.
+	 * @param {boolean?} ctrlKey - Whether or not the Ctrl key was pressed.
+	 * @param {boolean?} shiftKey - Whether or not the Shift key was pressed.
+	 */
+	constructor(options: KeyPressOptions | KeyboardEvent) {
 		if (!('key' in options)) {
 			throw new RangeError(`KeyPress: key is a required option`);
 		}
@@ -46,6 +59,15 @@ class KeyPress {
 		};
 	}
 
+	/**
+	 * Checks whether or not a given string representing a key or a key
+	 *   combination matches the current recorded KeyPress.
+	 *
+	 * @param  {string} keyString A string representing a key or key
+	 *   combination. For example, 'esc' or 'Ctrl+G'.
+	 *
+	 * @return {boolean}
+	 */
 	match(keyString: string): boolean {
 		const requiredModifiers = {
 			altKey: false,
