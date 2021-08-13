@@ -75,13 +75,19 @@ These dependencies are used when working on the project locally.
 
 * [Gulp](https://gulpjs.com/): Task runner
 
+* [TypeScript](https://www.typescriptlang.org/): JavaScript extension for static type checking
+
 * [Jasmine](https://jasmine.github.io/): Testing framework
+
+* [@types/jasmine](https://www.npmjs.com/package/@types/jasmine): TypeScript types for Jasmine
 
 * [sass](https://www.npmjs.com/package/sass): Compiling CSS from [Sass](https://sass-lang.com/)
 
 * [gulp-sass](https://www.npmjs.com/package/gulp-sass): Using the `sass` compiler with Gulp
 
 * [Webpack](https://webpack.js.org/): For JavaScript dependency management, used with Gulp
+
+* [ts-loader](https://github.com/TypeStrong/ts-loader): For compiling TypeScript using Webpack
 
 * [Express](https://expressjs.com/): Running a Node.js server, accessed at `http://localhost:<PORT>`
 
