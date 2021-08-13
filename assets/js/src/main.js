@@ -4,7 +4,7 @@ import {
 
 	bindSequence,
 	unbindSequence,
-} from '/keybinding.js';
+} from 'keybinding';
 
 const setMessage = (message) => {
 	return (e) => {
