@@ -5,12 +5,32 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = fileURLToPath(import.meta.url);
 
-let config = {
+const srcPath = path.resolve(__dirname, '../src');
+const entryPath = './docs/assets/js/src';
+const distPath = path.resolve(__dirname, '../docs/assets/js/dist');
+
+const config = {
 	mode: process.env.MODE,
-	entry: './docs/assets/js/src/main.js',
+	entry: `${entryPath}/main.js`,
 	output: {
-		path: path.resolve(__dirname, '../docs/assets/js/dist'),
-		filename: 'bundle.js',
+		path: distPath,
+		filename: '[name].bundle.js',
+	},
+	resolve: {
+		extensions: ['.js', '.ts'],
+		alias: {
+			'keybinding': `${srcPath}/keybinding.ts`,
+			'KeyBind': `${srcPath}/KeyBind.ts`,
+			'KeyPress': `${srcPath}/KeyPress.ts`,
+		},
+	},
+	module: {
+		rules: [
+			{
+				test: /\.ts$/,
+				loader: 'ts-loader',
+			},
+		],
 	},
 };
 
