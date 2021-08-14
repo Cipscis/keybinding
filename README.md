@@ -4,7 +4,7 @@
 
 ## Install
 
-Run `npm install github:cipscis/keybinding#semver:2.x`
+Run `npm install @cipscis/keybinding`
 
 ## Usage
 
