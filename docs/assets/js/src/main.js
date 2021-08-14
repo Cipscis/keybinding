@@ -4,7 +4,7 @@ import {
 
 	bindSequence,
 	unbindSequence,
-} from 'keybinding';
+} from '@cipscis/keybinding';
 
 const setMessage = (message) => {
 	return (e) => {

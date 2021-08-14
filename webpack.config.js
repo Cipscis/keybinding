@@ -19,9 +19,11 @@ const config = {
 	resolve: {
 		extensions: ['.js', '.ts'],
 		alias: {
-			'keybinding': `${srcPath}/keybinding.ts`,
-			'KeyBind': `${srcPath}/KeyBind.ts`,
-			'KeyPress': `${srcPath}/KeyPress.ts`,
+			'@cipscis/keybinding': `${srcPath}/keybinding.ts`,
+
+			// Extensions are required when using type: "module" with Webpack >=5
+			'./KeyBind.js': './KeyBind.ts',
+			'./KeyPress.js': './KeyPress.ts',
 		},
 	},
 	module: {
