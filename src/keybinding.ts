@@ -28,7 +28,7 @@ const defaults = Object.freeze({
  *
  * @return {function}
  */
-const createFnWrapper = (keyString: string, fn: KeybindingFn, opts: KeyBindingOptions): KeybindingFnWrapper => {
+const createFnWrapper = (keyString: string, fn: KeybindingFn, opts?: KeyBindingOptions): KeybindingFnWrapper => {
 	const options = Object.assign({}, defaults, opts);
 
 	const keyBind = new KeyBind(keyString);
@@ -77,7 +77,7 @@ const createFnWrapper = (keyString: string, fn: KeybindingFn, opts: KeyBindingOp
  *
  * @return {void}
  */
-const bind = (keyString: string, fn: (e: KeyboardEvent) => void, options: KeyBindingOptions): void => {
+const bind = (keyString: string, fn: (e: KeyboardEvent) => void, options?: KeyBindingOptions): void => {
 	if (!bindings.has(keyString)) {
 		bindings.set(keyString, new Map());
 	}
