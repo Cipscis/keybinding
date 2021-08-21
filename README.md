@@ -19,7 +19,7 @@ You will need to install [Node.js](https://nodejs.org/en/) before working on thi
 3. Create a [`.env`](#env) file.
 4. Run `npm start` to run the local server and watch CSS and JS files for changes.
 
-This project creates five npm tasks:
+This project creates six npm tasks:
 
 * `npm run server` runs a Node.js server on the port specified in the [`.env`](#env) file, using [Express](https://expressjs.com/).
 
@@ -29,7 +29,9 @@ This project creates five npm tasks:
 
 * `npm start` runs both the `server` and `watch` tasks simultaneously.
 
-* `npm test` task runs any configured test suites using [Jasmine](https://jasmine.github.io/).
+* `npm test` task compiles any TypeScript and runs any configured test suites using [Jasmine](https://jasmine.github.io/).
+
+* `npm run prepare` first removes directories containing compiled files, then compiles any TypeScript and runs any configured test suites using [Jasmine](https://jasmine.github.io/). You should never need to run this task manually, [the `prepare` script runs automatically](https://docs.npmjs.com/cli/v7/using-npm/scripts#life-cycle-scripts) when npm prepares your package for publishing.
 
 Usually, you will just want to run `npm start`.
 

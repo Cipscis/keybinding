@@ -2,14 +2,36 @@
 
 import gulp from 'gulp';
 
+///////////
+// Clean //
+///////////
+import { stat, rm } from 'fs/promises';
+
+const clean = function () {
+	const removeIfExists = function (path) {
+		return new Promise((resolve, reject) => {
+			stat(path)
+				.then(() => {
+					rm(path, { recursive: true })
+						.then(resolve) // Removed - desired state
+						.catch(reject); // Could not remove - error
+				})
+				.catch(resolve); // Doesn't exist - desired state
+		});
+	};
+
+	return Promise.all([
+		removeIfExists('dist'),
+		removeIfExists('docs/assets/js/dist'),
+		removeIfExists('docs/assets/css'),
+	]);
+};
+
 //////////////////////
 // Webpack bundling //
 //////////////////////
 import webpack from 'webpack';
 import webpackConfig from './webpack.config.js';
-
-const jsSrcDir = 'docs/assets/js/src';
-const jsSrcFiles = `${jsSrcDir}/**/*.js`;
 
 const createJsBuilder = function (config = webpackConfig) {
 	return new Promise((resolve, reject) => {
@@ -56,10 +78,10 @@ const watchJs = function () {
 //////////////////////
 // SCSS Compilation //
 //////////////////////
-import sass from 'gulp-sass';
+import sassInit from 'gulp-sass';
 
 import dartSass from 'sass';
-sass.compiler = dartSass;
+const sass = sassInit(dartSass);
 
 const cssSrcDir = 'docs/assets/scss';
 const cssSrcFiles = `${cssSrcDir}/**/*.scss`;
@@ -67,7 +89,7 @@ const cssOutputDir = 'docs/assets/css';
 
 const buildSass = function () {
 	return gulp.src(cssSrcFiles)
-		.pipe(sass().on('error', sass.logError))
+		.pipe(sass.sync().on('error', sass.logError))
 		.pipe(gulp.dest(cssOutputDir));
 };
 
@@ -82,6 +104,8 @@ const build = gulp.parallel(buildSass, buildJs);
 const watch = gulp.parallel(watchSass, watchJs);
 
 export {
+	clean,
+
 	build,
 	watch,
 
@@ -91,4 +115,4 @@ export {
 	watchJs,
 	watchSass,
 };
-export default gulp.series(build, watch);
+export default gulp.series(buildSass, watch);

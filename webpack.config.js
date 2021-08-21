@@ -11,7 +11,9 @@ const distPath = path.resolve(__dirname, '../docs/assets/js/dist');
 
 const config = {
 	mode: process.env.MODE,
-	entry: `${entryPath}/main.js`,
+	entry: {
+		'docs-script': `${entryPath}/docs-script.ts`,
+	},
 	output: {
 		path: distPath,
 		filename: '[name].bundle.js',

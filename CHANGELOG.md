@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2021-08-21
+
+### Changed
+
+* Updated build system
+
 ## [3.0.0] - 2021-08-14
 
 ### Changed
